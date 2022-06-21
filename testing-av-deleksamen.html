@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equip="X-UA-compatible" content="ie-edge">
+    <title>Skriv så mange land som mulig</title>   
+    <style>
+        body {
+            background: brown;
+        }
+        
+        h1 {
+            background: greenyellow;
+            color: red;    
+            font-size: 3rem;
+            text-align: center;
+            margin-top: 0;
+        }       
+        
+        #venstre {
+            width: 48%;
+            float: left;
+        }
+        
+        #hoyre {
+            width: 48%;
+            float: right;
+        }       
+        
+        #word {
+            font-size: 2rem;
+        }
+        
+        #check {
+            font-size: 1.9rem;
+            background: blue;
+        }
+        
+        #begynn {
+            font-size: 3rem;
+            background: purple;
+            padding: 1rem;
+        }
+        
+        #tidviser {
+            font-size: 4rem;
+        }
+        
+        #melding {
+            background: red;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Skriv så mange land som mulig</h1>
+    <!-- Denne p med id 'melding' tar imot melding når spillet er slutt -->
+    <p id="melding"></p>
+    <!-- Her har jeg lagd en knapp som kjører start() -->
+    <p><button id="begynn">START SPILLET</button></p>
+
+    <!-- Her har jeg lagd en section samler hele spillområdet som Vises når start() kjører -->
+    <section id="spillomradet">
+
+        <div id="venstre">
+            <p>Skriv inn landet og trykk "sjekk":</p>
+            <!-- Dette er et felt hvor brukeren skriver sitt ord -->
+            <input id="word" type="text" disabled />
+            <!-- Her lagde jeg en knapp som kjører checkWord() -->
+            <button id="check">Sjekk</button>
+        </div>
+
+        <div id="hoyre">
+            <div id="tid">
+                <p>Antall sekunder igjen:</p>
+                <!-- Her lagde jeg en klokke som viser nedtelling -->
+                <p id="tidviser"></p>
+                
+            </div>
+            <h2>Gjettede ord:</h2>
+            <ol id="ordlist">
+                <!-- Dette er en ordnet liste som viser alle skrevende ord -->
+            </ol>
+        </div>
+    </section>
+
+    <script>
+        //Dette er et array med de ordene som er de riktige ordene
+        var countryList = [
+        "Afghanistan",
+	"Albania",
+	"Algeria",
+	"American Samoa",
+	"Andorra",
+	"Angola",
+	"Anguilla",
+	"Antarctica",
+	"Antigua and Barbuda",
+	"Argentina",
+	"Armenia",
+	"Aruba",
+	"Australia",
+	"Austria",
+	"Azerbaijan",
+	"Bahamas (the)",
+	"Bahrain",
+	"Bangladesh",
+	"Barbados",
+	"Belarus",
+	"Belgium",
+	"Belize",
+	"Benin",
+	"Bermuda",
+	"Bhutan",
+	"Bolivia (Plurinational State of)",
+	"Bonaire, Sint Eustatius and Saba",
+	"Bosnia and Herzegovina",
+	"Botswana",
+	"Bouvet Island",
+	"Brazil",
+	"British Indian Ocean Territory (the)",
+	"Brunei Darussalam",
+	"Bulgaria",
+	"Burkina Faso",
+	"Burundi",
+	"Cabo Verde",
+	"Cambodia",
+	"Cameroon",
+	"Canada",
+	"Cayman Islands (the)",
+	"Central African Republic (the)",
+	"Chad",
+	"Chile",
+	"China",
+	"Christmas Island",
+	"Cocos (Keeling) Islands (the)",
+	"Colombia",
+	"Comoros (the)",
+	"Congo (the Democratic Republic of the)",
+	"Congo (the)",
+	"Cook Islands (the)",
+	"Costa Rica",
+	"Croatia",
+	"Cuba",
+	"Curaçao",
+	"Cyprus",
+	"Czechia",
+	"Côte d'Ivoire",
+	"Denmark",
+	"Djibouti",
+	"Dominica",
+	"Dominican Republic (the)",
+	"Ecuador",
+	"Egypt",
+	"El Salvador",
+	"Equatorial Guinea",
+	"Eritrea",
+	"Estonia",
+	"Eswatini",
+	"Ethiopia",
+	"Falkland Islands (the) [Malvinas]",
+	"Faroe Islands (the)",
+	"Fiji",
+	"Finland",
+	"France",
+	"French Guiana",
+	"French Polynesia",
+	"French Southern Territories (the)",
+	"Gabon",
+	"Gambia (the)",
+	"Georgia",
+	"Germany",
+	"Ghana",
+	"Gibraltar",
+	"Greece",
+	"Greenland",
+	"Grenada",
+	"Guadeloupe",
+	"Guam",
+	"Guatemala",
+	"Guernsey",
+	"Guinea",
+	"Guinea-Bissau",
+	"Guyana",
+	"Haiti",
+	"Heard Island and McDonald Islands",
+	"Holy See (the)",
+	"Honduras",
+	"Hong Kong",
+	"Hungary",
+	"Iceland",
+	"India",
+	"Indonesia",
+	"Iran (Islamic Republic of)",
+	"Iraq",
+	"Ireland",
+	"Isle of Man",
+	"Israel",
+	"Italy",
+	"Jamaica",
+	"Japan",
+	"Jersey",
+	"Jordan",
+	"Kazakhstan",
+	"Kenya",
+	"Kiribati",
+    "kosovo",
+	"Korea (the Democratic People's Republic of)",
+	"Korea (the Republic of)",
+	"Kuwait",
+	"Kyrgyzstan",
+	"Lao People's Democratic Republic (the)",
+	"Latvia",
+	"Lebanon",
+	"Lesotho",
+	"Liberia",
+	"Libya",
+	"Liechtenstein",
+	"Lithuania",
+	"Luxembourg",
+	"Macao",
+	"Madagascar",
+	"Malawi",
+	"Malaysia",
+	"Maldives",
+	"Mali",
+	"Malta",
+	"Marshall Islands (the)",
+	"Martinique",
+	"Mauritania",
+	"Mauritius",
+	"Mayotte",
+	"Mexico",
+	"Micronesia (Federated States of)",
+	"Moldova (the Republic of)",
+	"Monaco",
+	"Mongolia",
+	"Montenegro",
+	"Montserrat",
+	"Morocco",
+	"Mozambique",
+	"Myanmar",
+	"Namibia",
+	"Nauru",
+	"Nepal",
+	"Netherlands (the)",
+	"New Caledonia",
+	"New Zealand",
+	"Nicaragua",
+	"Niger (the)",
+	"Nigeria",
+	"Niue",
+	"Norfolk Island",
+	"Northern Mariana Islands (the)",
+	"Norway",
+	"Oman",
+	"Pakistan",
+	"Palau",
+	"Palestine, State of",
+	"Panama",
+	"Papua New Guinea",
+	"Paraguay",
+	"Peru",
+	"Philippines (the)",
+	"Pitcairn",
+	"Poland",
+	"Portugal",
+	"Puerto Rico",
+	"Qatar",
+	"Republic of North Macedonia",
+	"Romania",
+	"Russian Federation (the)",
+	"Rwanda",
+	"Réunion",
+	"Saint Barthélemy",
+	"Saint Helena, Ascension and Tristan da Cunha",
+	"Saint Kitts and Nevis",
+	"Saint Lucia",
+	"Saint Martin (French part)",
+	"Saint Pierre and Miquelon",
+	"Saint Vincent and the Grenadines",
+	"Samoa",
+	"San Marino",
+	"Sao Tome and Principe",
+	"Saudi Arabia",
+	"Senegal",
+	"Serbia",
+	"Seychelles",
+	"Sierra Leone",
+	"Singapore",
+	"Sint Maarten (Dutch part)",
+	"Slovakia",
+	"Slovenia",
+	"Solomon Islands",
+	"Somalia",
+	"South Africa",
+	"South Georgia and the South Sandwich Islands",
+	"South Sudan",
+	"Spain",
+	"Sri Lanka",
+	"Sudan (the)",
+	"Suriname",
+	"Svalbard and Jan Mayen",
+	"Sweden",
+	"Switzerland",
+	"Syrian Arab Republic",
+	"Taiwan",
+	"Tajikistan",
+	"Tanzania, United Republic of",
+	"Thailand",
+	"Timor-Leste",
+	"Togo",
+	"Tokelau",
+	"Tonga",
+	"Trinidad and Tobago",
+	"Tunisia",
+	"Turkey",
+	"Turkmenistan",
+	"Turks and Caicos Islands (the)",
+	"Tuvalu",
+	"Uganda",
+	"Ukraine",
+	"United Arab Emirates (the)",
+	"United Kingdom of Great Britain and Northern Ireland (the)",
+	"United States Minor Outlying Islands (the)",
+	"United States of America (the)",
+	"Uruguay",
+	"Uzbekistan",
+	"Vanuatu",
+	"Venezuela (Bolivarian Republic of)",
+	"Viet Nam",
+	"Virgin Islands (British)",
+	"Virgin Islands (U.S.)",
+	"Wallis and Futuna",
+	"Western Sahara",
+	"Yemen",
+	"Zambia",
+	"Zimbabwe",
+	"Åland Islands"
+        ];
+        //Dette her er en tom array som lagrer godkjente, gjettede ord
+        var trueWords = [];
+        //Dette er en klargjøring av variabel som tar imot HTML-utskrift av liste med ord som er skrevet av brukeren
+        var trueWordsHTML = "";
+        //Dette er en variabel som lagrer om et ord er gyldig eller ikke basert på reglene kontrollert i checkWord()
+        var wordValidity = true;
+        //Dette er en variabel som inneholder setInterval-funksjonen for funksjonen som teller ned klokken
+        var timer;
+
+        //Funksjonen start() kjører når startknappen trykkes, og dermed setter i gang spillet
+        function start() {
+            //Når funksjonen kjører, Så gjør jeg slik at man kan skrive i boksen for å skrive land.
+            document.getElementById("word").disabled = false;
+            // Dette her gjør div'en min #time synlig i spillet
+            document.getElementById("tid").style.display = "block";
+            document.getElementById("tidviser").style.display = "block";
+            // Her så gjør jeg at antall sekunder man har på seg når spillet starter, til å være 60
+            document.getElementById("tidviser").innerHTML = 60;
+            // Dette gjør at start-knappen blir usynlig når man starter spillet. 
+            document.getElementById("begynn").style.display = "none";
+            //Dette her gjør at meldingsboksen i p#message tom etter man har skrevet et ord.
+            document.getElementById("melding").innerHTML = "";       
+            //Etter det, så starter jeg en setInterval som kjører funksjonen countDown hvert sekund som går, altså hvert 1000 milisekund.
+            timer = setInterval(countDown, 1000);
+        }
+
+        document.getElementById("begynn").addEventListener("click", start);
+      
+        //CountDown() er en funksjon som skal telle ned. Den kjøres kjøres i setInterval i funksjonen start.
+        function countDown() {
+            //Når funksjonen kjøres, henter den verdien fra gametime, som er 60 sekunder og gjør den om til datatypen tall før den lagres i variabelen seconds
+            var seconds = Number(document.getElementById("tidviser").innerHTML);
+            //Etter det så trekkes 1 fra seekund, hvert sekund som går. 
+            seconds--;
+            //Etter det så 'spytter' vi det tilbake til spillet igjen slik at det fungerer når man spiller. 
+            document.getElementById("tidviser").innerHTML = seconds;
+
+            //Her gjorde jeg at når tidviseren min er på 30 sekunder, så bytter den farge til oransj.
+            if (seconds < 31) {
+                document.getElementById("tidviser").style.color = "orange";
+            }
+            //Her gjorde jeg at når tidviseren min er på 10 sekunder, så bytter den farge til rød.
+            if (seconds < 11) {
+                document.getElementById("tidviser").style.color = "red";
+            }
+
+            //Her gjorde jeg at når telleren er på 0
+            if (seconds == 0) {
+                //så disablet jeg inputen word, så brukeren ikke har muligheten til å skrive mer ord
+                document.getElementById("word").disabled = true;
+                //Så stoppet jeg setInterval fra å telle ned videre når den har nådd 0.
+                clearInterval(timer);
+                //Her så gjør jeg start knappen synlig igjen, og spilleren har mulighet til å begynne på nytt.
+                document.getElementById("begynn").style.display = "block";
+                //Når den har nådd 0, så gjorde jeg at start knappen endrer tekst til 'begynn på nytt'.
+                document.getElementById("begynn").innerHTML = "Begynn på nytt";
+                //SÅ skrev jeg ut en beskjed og viser hvor mange ord brukeren klarte å finne. 
+                document.getElementById("melding").innerHTML = "Tiden er ute, du fant " + trueWords.length + " ord. Veldig bra jobba";
+            }
+        }
+
+        //Så lagde jeg en eventListener, som kjører funksjonen start() når når start knappen er trykket. 
+        document.getElementById("begynn").addEventListener("click", start);
+
+        //Her vil funksjonen printCorrectWords gå gjennom alle ordene i trueWords, og lager et listeelement for hvert ord som kobles i trueWordsHTML-variabelen
+        function printCorrectWords() {
+            for (var ci = 0; ci < trueWords.length; ci++) {
+                trueWordsHTML += "<li>" + trueWords[ci] + "</li>";
+            }
+            //Etter det så skrives listen ut til wordlist
+            document.getElementById("ordlist").innerHTML = trueWordsHTML;
+            //Så vil trueWordsHTML-variabelen bli tømt for å utføre en ny skriving når brukeren har oppnådd ett riktig ord.
+            trueWordsHTML = "";
+        }
+       
+        //funksjonen checkWord() sammenligner det ordet skrevet av brukeren med løsningsordet for å sjekke at det følger spillreglene
+        function checkWord() {
+            //Dermed henter jeg brukerens ord og lagrer det i guessedWord
+            var guessedWord = document.getElementById("word").value;
+            // slik at vi trygt kan sammenligne med randomWord.
+            guessedWord.toUpperCase();
+            
+            //Når alle bokstavene blir sjekket mot hverandre, så ser jeg om wordValidity er true.
+            if (wordValidity == true) {
+                //Hvis det er korrekt, så må vi sjekke om det godkjente ordet allerede er gjettet, ved å se om ordet ligger i correctWords-arrayen ved hjelp av includes:
+                if (trueWords.includes(guessedWord) == true) {
+                    //Hvis ordet eksisterer, så la jeg til en rød ramme rundt inputen til brukeren
+                    document.getElementById("word").style.borderColor = "red";
+                } else {
+                    //Med mindre ordet ikke ligger i correctWords, så legger jeg det til
+                    trueWords.push(guessedWord);
+                    //Jeg sørger for at rammen på brukerinputen slutter å bli rød
+                    document.getElementById("word").style.borderColor = "black";
+                    //Jeg kaller printCorrectWords for å oppdater listeutskriften med alle godkjente ord
+                    printCorrectWords();
+                    //Etter satt jeg wordValidity til true, slik at neste ord som gjettes er sant Helt fram til en av sjekkene mot reglene sier noe annet.
+                    wordValidity = true;
+                }
+            } else {
+                //Hvis wordValidity false, så har jeg utført de handlingene jeg vil i sjekkene over, og skal ikke gjøre noe mer. Dermed satt jeg wordValidity til true, 
+                //slik at det neste ordet som blir skrivet er true, helt fram til en av sjekkene mot reglene sier noe annet.
+                wordValidity = true;
+            }
+
+            //Sist men ikke minst tømmte jeg inputen for bokstaver, så den som skriver, har mulighet til å skrive inn ett nytt ord
+            document.getElementById("word").value = ""; 
+        }
+
+        //Jeg lagde også en eventListener som kjører funksjonen checkWord når knappen med id check er trykket ned av brukeren
+        document.getElementById("check").addEventListener("click", checkWord);
+    </script>
+</body>
+</html>
